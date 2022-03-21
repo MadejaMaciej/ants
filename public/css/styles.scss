@@ -30,11 +30,31 @@ header {
 
 footer {
     bottom: 0;
-    width: 100vw;
+    width: 100%;
 }
 
 .footer-heighter {
     height: 102px;
+}
+
+.field {
+    width: 20px;
+    height: 20px;
+    margin: 4px;
+    border: 1px solid #000;
+}
+
+.board {
+    border: 1px solid #000;
+    margin: 10px 0px !important;
+}
+
+@media(max-width: 1100px){
+    .field {
+        width: 10px;
+        height: 10px;
+        margin: 2px;
+    }
 }
 
 @media(max-width: 767px){
@@ -48,6 +68,10 @@ footer {
 
     .footer-heighter {
         height: 64px;
+    }
+
+    html, body, #root, .background {
+        overflow-x: scroll;
     }
 }
 
