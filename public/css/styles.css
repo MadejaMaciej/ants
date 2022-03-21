@@ -1,5 +1,66 @@
-*, html, body {
+html, body, #root, .background {
   margin: 0px;
   padding: 0px;
+  min-height: 100vh;
+}
+
+html *, body *, #root *, .background * {
+  margin: 0px;
+  padding: 0px;
+}
+
+.logo {
+  width: 80px;
+  max-height: -webkit-max-content;
+  max-height: -moz-max-content;
+  max-height: max-content;
+}
+
+header {
+  max-height: 120px;
+}
+
+.background {
+  z-index: 1;
+}
+
+.on-top {
+  z-index: 1000;
+}
+
+footer {
+  bottom: 0;
+  width: 100vw;
+}
+
+.footer-heighter {
+  height: 102px;
+}
+
+@media (max-width: 767px) {
+  .small-padding-mobile {
+    padding: 20px !important;
+  }
+}
+
+@media (max-width: 450px) {
+  .d-none-mobile {
+    display: none;
+  }
+  .footer-heighter {
+    height: 64px;
+  }
+}
+
+@media (max-width: 313px) {
+  .footer-heighter {
+    height: 88px;
+  }
+}
+
+@media (max-width: 300px) {
+  .logo {
+    width: 50px;
+  }
 }
 /*# sourceMappingURL=styles.css.map */
