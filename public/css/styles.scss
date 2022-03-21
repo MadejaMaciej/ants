@@ -41,9 +41,7 @@ footer {
     .small-padding-mobile {
         padding: 20px !important;
     }
-}
 
-@media(max-width: 450px){
     .d-none-mobile {
         display: none;
     }
@@ -53,14 +51,14 @@ footer {
     }
 }
 
-@media(max-width: 313px){
+@media(max-width: 568px){
     .footer-heighter {
         height: 88px;
     }
 }
 
-@media(max-width: 300px){
-    .logo {
-        width: 50px;
+@media(max-width: 316px){
+    .footer-heighter {
+        height: 112px;
     }
 }

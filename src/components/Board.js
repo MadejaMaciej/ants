@@ -1,5 +1,5 @@
 const Board = (props) => {
-    var jsx = <div></div>
+    var jsx = []
     return(
         <div id="board" className="board">
             {jsx}
