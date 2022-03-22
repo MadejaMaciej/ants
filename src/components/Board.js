@@ -1,4 +1,5 @@
 const Board = (props) => {
+    var resources = props.resources
     var firstPlaces = props.firstAnthillPositions
     var secondPlaces =  props.secondAnthillPositions
 
@@ -7,6 +8,8 @@ const Board = (props) => {
         jsx += `<div class="d-flex row row-${i} w-100 ustify-content-around">`
         for(var j = 0; j < props.height; j++){
             var notPlacedAnthill = true
+            var notPlacedResource = true
+
             for(var k = 0; k < firstPlaces.length; k++){
                 if(firstPlaces[k].width == j && firstPlaces[k].height == i){
                     jsx += `<div class="field field-${i}-${j} m-auto my-2 anthill props-red" data-field="field-${i}-${j}"></div>`
@@ -21,10 +24,16 @@ const Board = (props) => {
                 }
             }
 
-            if(notPlacedAnthill){
+            for(var k = 0; k < resources.length; k++){
+                if(resources[k].width == j && resources[k].height == i){
+                    jsx += `<div class="field field-${i}-${j} m-auto my-2 resource" data-field="field-${i}-${j}"></div>`
+                    notPlacedResource = false
+                }
+            }
+
+            if(notPlacedAnthill && notPlacedResource){
                 jsx += `<div class="field field-${i}-${j} m-auto my-2" data-field="field-${i}-${j}"></div>`
             }
-            
         }
         jsx += `</div>`
     }
