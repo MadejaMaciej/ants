@@ -103,6 +103,7 @@ class Simulation extends Component {
       
       return getRandomItem(possibilities)
     }else{
+      // Add here checking if some resource is in range of ant
       if(base.width - 1 > 0){
         if(isRed){
           if(worker){
