@@ -26,8 +26,17 @@ class App extends Component {
     })
   }
 
+  hideInfos(){
+    var els = document.getElementsByClassName('ant-card')
+
+    for(let i = 0; i < els.length; i++){
+      els[i].classList.add('d-none')
+    }
+  }
+
   componentDidMount(){
     window.addEventListener('resize', that.handleResize)
+    window.addEventListener('click', that.hideInfos)
   }
 
   render(){

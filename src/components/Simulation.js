@@ -1,12 +1,14 @@
 import { Component } from 'react'
 import { Board } from './Board'
+import { Ant } from './Ant'
+import { Stats } from './Stats'
 
-import { randomNumber, getRandomName } from '../utils/random'
+import { randomNumber, getRandomName, getRandomItem, getRandomItemBasedOnValue } from '../utils/random'
 
 var width = 50, height = 50, that, health = 100
-var startingResources = 20, resourcesSpawnTime = 20000, resourcesMaxQuantity = 20, resourcesMinQuantity = 1
-var maxPopulationCap = 50, startingWarriors = 5, startingWorkers = 15, startingResources = 20
-var geneticalExchangeCost = 30, warriorCost = 15, workerCost = 10, lvlExperienceFirst = 1000, lvlExperienceModify = 3
+var startingResources = 20, resourcesSpawnTime = 20000, resourcesMaxQuantity = 20, resourcesMinQuantity = 1, spawnResourceInterval
+var maxPopulationCap = 50, startingWarriors = 5, startingWorkers = 15
+var geneticalExchangeCost = 30, warriorCost = 15, workerCost = 10, lvlExperienceFirst = 1000, lvlExperienceModifier = 3
 var antSeeRange = 1
 
 class Simulation extends Component {
@@ -55,12 +57,318 @@ class Simulation extends Component {
 
   }
 
+  showAnts(){
+    var toRender = []
+
+    for(let i = 0; i < that.state.redStats.ants.length; i++){
+      var key = `red-${i}`
+      toRender.push(<Ant color='red' classes='ant red-ant position-absolute clickable' ant={that.state.redStats.ants[i]} key={key} />)
+    }
+    
+    for(let i = 0; i < that.state.greenStats.ants.length; i++){
+      var key = `green-${i}`
+      toRender.push(<Ant color='green' classes='ant green-ant position-absolute clickable' ant={that.state.greenStats.ants[i]} key={key} />)
+    }
+
+    return toRender
+  }
+
+  chooseWhereToMove(base, starting, isRed, worker, to){
+    var possibilities = []
+    if(starting){
+      if(base.width - 1 > 0){
+        possibilities.push({ width: base.width - 1, height: base.height })
+      }
+      if(base.width + 1 < width){
+        possibilities.push({ width: base.width + 1, height: base.height })
+      }
+      if(base.height - 1 >= 0){
+        possibilities.push({ width: base.width, height: base.height - 1 })
+      }
+      if(base.height + 1 < height){
+        possibilities.push({ width: base.width, height: base.height + 1 })
+      }
+      if(base.width - 1 >= 0 && base.height - 1 >= 0){
+        possibilities.push({ width: base.width - 1, height: base.height - 1 })
+      }
+      if(base.width + 1 < width && base.height - 1 >= 0){
+        possibilities.push({ width: base.width + 1, height: base.height - 1 })
+      }
+      if(base.width - 1 >= 0 && base.height + 1 < height){
+        possibilities.push({ width: base.width - 1, height: base.height + 1 })
+      }
+      if(base.width + 1 < width && base.height + 1 < height){
+        possibilities.push({ width: base.width + 1, height: base.height + 1 })
+      }
+      
+      return getRandomItem(possibilities)
+    }else{
+      if(base.width - 1 > 0){
+        if(isRed){
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWorkerRed })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWorkerBackRed })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWarriorRed })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWarriorBackRed })
+            }
+          }
+        }else{
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWorkerGreen })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWorkerBackGreen })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWarriorGreen })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWarriorBackGreen })
+            }
+          }
+        }
+      }
+      
+      if(base.width + 1 < width){
+        if(isRed){
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWorkerRed })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWorkerBackRed })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWarriorRed })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWarriorBackRed })
+            }
+          }
+        }else{
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWorkerGreen })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWorkerBackGreen })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWarriorGreen })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWarriorBackGreen })
+            }
+          }
+        }
+      }
+
+      if(base.height - 1 >= 0){
+        if(isRed){
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWorkerRed })
+            }else{
+              possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWorkerBackRed })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWarriorRed })
+            }else{
+              possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWarriorBackRed })
+            }
+          }
+        }else{
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWorkerGreen })
+            }else{
+              possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWorkerBackGreen })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWarriorGreen })
+            }else{
+              possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWarriorBackGreen })
+            }
+          }
+        }
+      }
+
+      if(base.height + 1 < height){
+        if(isRed){
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWorkerRed })
+            }else{
+              possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWorkerBackRed })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWarriorRed })
+            }else{
+              possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWarriorBackRed })
+            }
+          }
+        }else{
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWorkerGreen })
+            }else{
+              possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWorkerBackGreen })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWarriorGreen })
+            }else{
+              possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWarriorBackGreen })
+            }
+          }
+        }
+      }
+
+      if(base.width - 1 >= 0 && base.height - 1 >= 0){
+        if(isRed){
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWorkerRed })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWorkerBackRed })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWarriorRed })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWarriorBackRed })
+            }
+          }
+        }else{
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWorkerGreen })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWorkerBackGreen })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWarriorGreen })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWarriorBackGreen })
+            }
+          }
+        }
+      }
+
+      if(base.width + 1 < width && base.height - 1 >= 0){
+        if(isRed){
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWorkerRed })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWorkerBackRed })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWarriorRed })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWarriorBackRed })
+            }
+          }
+        }else{
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWorkerGreen })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWorkerBackGreen })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWarriorGreen })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWarriorBackGreen })
+            }
+          }
+        }
+      }
+      if(base.width - 1 >= 0 && base.height + 1 < height){
+        if(isRed){
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWorkerRed })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWorkerBackRed })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWarriorRed })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWarriorBackRed })
+            }
+          }
+        }else{
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWorkerGreen })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWorkerBackGreen })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWarriorGreen })
+            }else{
+              possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWarriorBackGreen })
+            }
+          }
+        }
+      }
+
+      if(base.width + 1 < width && base.height + 1 < height){
+        if(isRed){
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWorkerRed })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWorkerBackRed })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWarriorRed })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWarriorBackRed })
+            }
+          }
+        }else{
+          if(worker){
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWorkerGreen })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWorkerBackGreen })
+            }
+          }else{
+            if(to){
+              possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWarriorGreen })
+            }else{
+              possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWarriorBackGreen })
+            }
+          }
+        }
+      }
+      
+      return getRandomItemBasedOnValue(possibilities)
+    }
+
+  }
+
   generateAnts(quantityWarriors, quantityWorkers, basePosition){
     var ants = []
     
-    for(var i = 0; i < quantityWarriors; i++){
-      var nameRand = getRandomName()
-      var health = randomNumber(0, 1023)
+    for(let i = 0; i < quantityWarriors; i++){
+      let nameRand = getRandomName()
+      let health = randomNumber(0, 1023)
       ants.push({
         name: nameRand[0],
         surname: nameRand[1]+nameRand[2],
@@ -70,14 +378,18 @@ class Simulation extends Component {
         attack: randomNumber(0, 1023),
         currentHealth: health,
         position: basePosition,
+        nextPosition: that.chooseWhereToMove(basePosition, true),
+        feromonToLeft: [],
+        feromonFromLeft: [],
         level: 1,
-        experience: 0
+        experience: 0,
+        activity: 'Searching for enemy'
       })
     }
 
-    for(var i = 0; i < quantityWorkers; i++){
-      var nameRand = getRandomName()
-      var health = randomNumber(0, 1023)
+    for(let i = 0; i < quantityWorkers; i++){
+      let nameRand = getRandomName()
+      let health = randomNumber(0, 1023)
       ants.push({
         name: nameRand[0],
         surname: nameRand[1]+nameRand[2],
@@ -87,8 +399,12 @@ class Simulation extends Component {
         attack: randomNumber(0, 255),
         currentHealth: health,
         position: basePosition,
+        nextPosition: that.chooseWhereToMove(basePosition, true),
+        feromonToLeft: [],
+        feromonFromLeft: [],
         level: 1,
-        experience: 0
+        experience: 0,
+        activity: 'Searching for resources'
       })
     }
 
@@ -146,7 +462,7 @@ class Simulation extends Component {
 
     var combinedResource = that.spawnResources(startingResources, {width: w1, height: h1}, {width: w2, height: h2})
 
-    setInterval(() => {
+    spawnResourceInterval = setInterval(() => {
       var resource = that.spawnResources(1, that.state.baseRed, that.state.baseGreen)
       var newResource = true
       var combinedResource = []
@@ -175,17 +491,19 @@ class Simulation extends Component {
     var m = []
 
     for(var i = 0; i < width; i++){
+      m.push([])
       for(var j = 0; j < height; j++){
-        m.push({
+        m[i].push({
           field: i+'-'+j,
-          feromonsWorkerRed: 0,
-          feromonsWorkerGreen: 0,
-          feromonsWorkerBackRed: 0,
-          feromonsWorkerBackGreen: 0,
-          feromonsWarriorRed: 0,
-          feromonsWarriorGreen: 0,
-          feromonsWarriorBackRed: 0,
-          feromonsWarriorBackGreen: 0
+          feromonsWorkerRed: 1,
+          feromonsWorkerGreen: 1,
+          feromonsWorkerBackRed: 1,
+          feromonsWorkerBackGreen: 1,
+          feromonsWarriorRed: 1,
+          feromonsWarriorGreen: 1,
+          feromonsWarriorBackRed: 1,
+          feromonsWarriorBackGreen: 1,
+          value: 1
         })
       }
     }
@@ -224,10 +542,21 @@ class Simulation extends Component {
     })
   }
 
+  componentWillUnmount(){
+    if(spawnResourceInterval){
+      clearInterval(spawnResourceInterval)
+    }
+  }
+
   render(){
     return (
-      <div id="game" className="game">
-        <Board width={width} height={height} firstAnthillPositions={that.state.baseRed} secondAnthillPositions={that.state.baseGreen} resources={that.state.resources} />
+      <div id="game" className="game position-relative">
+        <div className='d-flex justify-content-between mb-4'>
+          <Stats stats={this.state.redStats} team='red' maxPopulation={maxPopulationCap} />
+          <Stats stats={this.state.greenStats} team='green' maxPopulation={maxPopulationCap} />
+        </div>
+        {this.showAnts()}
+        <Board width={width} height={height} firstAnthillPositions={this.state.baseRed} secondAnthillPositions={this.state.baseGreen} resources={this.state.resources} />
       </div>
     )
   }
