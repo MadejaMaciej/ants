@@ -41,7 +41,6 @@ footer {
   width: 20px;
   height: 20px;
   margin: 4px;
-  border: 1px solid black;
   text-align: center;
 }
 
@@ -89,10 +88,21 @@ footer {
 
 .ant-card {
   width: 400px;
+  top: 10px;
+  z-index: 1001;
 }
 
 .not-clickable {
   cursor: default;
+}
+
+.my-own-small {
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+}
+
+.to-left {
+  left: -422px;
 }
 
 @media (max-width: 1100px) {

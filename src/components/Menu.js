@@ -20,9 +20,9 @@ const Menu = () => {
                             <li className="nav-item mx-3">
                                 <a href="/simulation" className="nav-link" aria-current="page" onClick={(e) => redirect(e, '/simulation')}>Simulation</a>
                             </li>
-                            <li className="nav-item mx-3">
+                            {/* <li className="nav-item mx-3">
                                 <a href="/game" className="nav-link" aria-current="page" onClick={(e) => redirect(e, '/game')}>Game</a>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
                 </div>
