@@ -10,7 +10,7 @@ import { randomNumber, getRandomName, getRandomItem, getRandomItemBasedOnValue }
 var width = 50, height = 50, that, health = 100
 var startingResources = 20, resourcesSpawnTime = 20000, resourcesMaxQuantity = 20, resourcesMinQuantity = 1, spawnResourceInterval
 var maxPopulationCap = 50, starting = 1
-var geneticalExchangeCost = 30, workerCost = 15, lvlExperienceFirst = 1000, lvlExperienceModifier = 1.5
+var geneticalExchangeCost = 30, birthModifier = 0.5, twoBirthsChanceModifier = 0.2, lvlExperienceFirst = 1000, lvlExperienceModifier = 1.5
 var speedOfAnim = 1000, moveInterval
 var feromoneDissapearInterval = 5000, feromoneInterval
 
@@ -46,10 +46,6 @@ class Simulation extends Component {
       map : []
     }
     that = this
-  }
-
-  buyAnt(){
-
   }
 
   geneticalExchange(){
