@@ -51,6 +51,8 @@ footer {
 
 .anthill {
   background-color: black;
+  width: 20px;
+  height: 20px;
 }
 
 .anthill.props-red {
@@ -63,6 +65,8 @@ footer {
 
 .resource {
   background-color: blue;
+  width: 20px;
+  height: 20px;
 }
 
 .stat-card {
@@ -110,6 +114,14 @@ footer {
     width: 10px;
     height: 10px;
     margin: 2px;
+  }
+  .anthill {
+    width: 10px;
+    height: 10px;
+  }
+  .resource {
+    width: 10px;
+    height: 10px;
   }
 }
 

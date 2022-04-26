@@ -4,7 +4,6 @@ import { Menu } from './Menu'
 import { Main } from './Main'
 import { Footer } from './Footer'
 import { Simulation } from './Simulation'
-import { Game } from './Game'
 import { WindowSmall } from './WindowSmall'
 
 var name = 'Maciej Madejczyk', yearOfProduction = '2022', that
@@ -49,7 +48,6 @@ class App extends Component {
               <Routes>
                 <Route exact path="/" element={<Main />} />
                 <Route exact path="/simulation" element={<Simulation />} />
-                <Route exact path="/game" element={<Game />} />
               </Routes>
             </section>
             <div className="footer-heighter"></div>
