@@ -7,9 +7,12 @@ import { Stats } from './Stats'
 
 import { randomNumber, getRandomName, getRandomItem, getRandomItemBasedOnValue } from '../utils/random'
 
+// New ants will appear when geneticalExchange happens. It will have chance to produce 0, 1 or 2 childs - more you have already, less you are able to produce.
+// Each parent (only parent) will have his genom modified. First 0 will be changed to 1 and previous number will be change to 0. If two kids are born only 0 changes to 1. 
+
 var width = 50, height = 50, that, health = 100
 var startingResources = 20, resourcesSpawnTime = 20000, resourcesMaxQuantity = 20, resourcesMinQuantity = 1, spawnResourceInterval
-var maxPopulationCap = 50, starting = 1
+var maxPopulationCap = 50, starting = 5
 var geneticalExchangeCost = 30, birthModifier = 0.5, twoBirthsChanceModifier = 0.2, lvlExperienceFirst = 1000, lvlExperienceModifier = 1.5
 var speedOfAnim = 1000, moveInterval
 var feromoneDissapearInterval = 5000, feromoneInterval
@@ -121,18 +124,33 @@ class Simulation extends Component {
       
       return getRandomItem(possibilities)
     }else{
-      // Add here checking if some resource is in range of ant
       if(base.width - 1 > 0){
         if(isRed){
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width - 1 && that.state.resources[i].height == base.height){
+                return { width: base.width - 1, height: base.height }
+              }
+            }
             possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWorkerRed })
           }else{
+            if(that.state.baseRed.width == base.width - 1 && that.state.baseRed.height == base.height){
+              return { width: base.width - 1, height: base.height }
+            }
             possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWorkerBackRed })
           }
         }else{
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width - 1 && that.state.resources[i].height == base.height){
+                return { width: base.width - 1, height: base.height }
+              }
+            }
             possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWorkerGreen })
           }else{
+            if(that.state.baseGreen.width == base.width - 1 && that.state.baseGreen.height == base.height){
+              return { width: base.width - 1, height: base.height }
+            }
             possibilities.push({ width: base.width - 1, height: base.height, value: that.state.map[base.width - 1][base.height].feromonsWorkerBackGreen })
           }
         }
@@ -141,14 +159,30 @@ class Simulation extends Component {
       if(base.width + 1 < width){
         if(isRed){
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width + 1 && that.state.resources[i].height == base.height){
+                return { width: base.width + 1, height: base.height }
+              }
+            }
             possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWorkerRed })
           }else{
+            if(that.state.baseRed.width == base.width + 1 && that.state.baseRed.height == base.height){
+              return { width: base.width + 1, height: base.height }
+            }
             possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWorkerBackRed })
           }
         }else{
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width + 1 && that.state.resources[i].height == base.height){
+                return { width: base.width + 1, height: base.height }
+              }
+            }
             possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWorkerGreen })
           }else{
+            if(that.state.baseGreen.width == base.width + 1 && that.state.baseGreen.height == base.height){
+              return { width: base.width + 1, height: base.height }
+            }
             possibilities.push({ width: base.width + 1, height: base.height, value: that.state.map[base.width + 1][base.height].feromonsWorkerBackGreen })
           }
         }
@@ -157,14 +191,30 @@ class Simulation extends Component {
       if(base.height - 1 >= 0){
         if(isRed){
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width && that.state.resources[i].height == base.height - 1){
+                return { width: base.width, height: base.height - 1 }
+              }
+            }
             possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWorkerRed })
           }else{
+            if(that.state.baseRed.width == base.width && that.state.baseRed.height == base.height - 1){
+              return { width: base.width, height: base.height - 1 }
+            }
             possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWorkerBackRed })
           }
         }else{
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width && that.state.resources[i].height == base.height - 1){
+                return { width: base.width, height: base.height - 1 }
+              }
+            }
             possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWorkerGreen })
           }else{
+            if(that.state.baseGreen.width == base.width && that.state.baseGreen.height == base.height - 1){
+              return { width: base.width, height: base.height - 1 }
+            }
             possibilities.push({ width: base.width, height: base.height - 1, value: that.state.map[base.width][base.height - 1].feromonsWorkerBackGreen })
           }
         }
@@ -173,14 +223,30 @@ class Simulation extends Component {
       if(base.height + 1 < height){
         if(isRed){
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width && that.state.resources[i].height == base.height + 1){
+                return { width: base.width, height: base.height + 1 }
+              }
+            }
             possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWorkerRed })
           }else{
+            if(that.state.baseRed.width == base.width && that.state.baseRed.height == base.height + 1){
+              return { width: base.width, height: base.height + 1 }
+            }
             possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWorkerBackRed })
           }
         }else{
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width && that.state.resources[i].height == base.height + 1){
+                return { width: base.width, height: base.height + 1 }
+              }
+            }
             possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWorkerGreen })
           }else{
+            if(that.state.baseGreen.width == base.width && that.state.baseGreen.height == base.height + 1){
+              return { width: base.width, height: base.height + 1 }
+            }
             possibilities.push({ width: base.width, height: base.height + 1, value: that.state.map[base.width][base.height + 1].feromonsWorkerBackGreen })
           }
         }
@@ -189,14 +255,30 @@ class Simulation extends Component {
       if(base.width - 1 >= 0 && base.height - 1 >= 0){
         if(isRed){
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width - 1 && that.state.resources[i].height == base.height - 1){
+                return { width: base.width - 1, height: base.height - 1 }
+              }
+            }
             possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWorkerRed })
           }else{
+            if(that.state.baseRed.width == base.width - 1 && that.state.baseRed.height == base.height - 1){
+              return { width: base.width - 1, height: base.height - 1 }
+            }
             possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWorkerBackRed })
           }
         }else{
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width - 1 && that.state.resources[i].height == base.height - 1){
+                return { width: base.width - 1, height: base.height - 1 }
+              }
+            }
             possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWorkerGreen })
           }else{
+            if(that.state.baseGreen.width == base.width - 1 && that.state.baseGreen.height == base.height - 1){
+              return { width: base.width - 1, height: base.height - 1 }
+            }
             possibilities.push({ width: base.width - 1, height: base.height - 1, value: that.state.map[base.width - 1][base.height - 1].feromonsWorkerBackGreen })
           }
         }
@@ -205,14 +287,30 @@ class Simulation extends Component {
       if(base.width + 1 < width && base.height - 1 >= 0){
         if(isRed){
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width + 1 && that.state.resources[i].height == base.height - 1){
+                return { width: base.width + 1, height: base.height - 1 }
+              }
+            }
             possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWorkerRed })
           }else{
+            if(that.state.baseRed.width == base.width + 1 && that.state.baseRed.height == base.height - 1){
+              return { width: base.width + 1, height: base.height - 1 }
+            }
             possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWorkerBackRed })
           }
         }else{
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width + 1 && that.state.resources[i].height == base.height - 1){
+                return { width: base.width + 1, height: base.height - 1 }
+              }
+            }
             possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWorkerGreen })
           }else{
+            if(that.state.baseGreen.width == base.width + 1 && that.state.baseGreen.height == base.height - 1){
+              return { width: base.width + 1, height: base.height - 1 }
+            }
             possibilities.push({ width: base.width + 1, height: base.height - 1, value: that.state.map[base.width + 1][base.height - 1].feromonsWorkerBackGreen })
           }
         }
@@ -221,14 +319,30 @@ class Simulation extends Component {
       if(base.width - 1 >= 0 && base.height + 1 < height){
         if(isRed){
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width - 1 && that.state.resources[i].height == base.height + 1){
+                return { width: base.width - 1, height: base.height + 1 }
+              }
+            }
             possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWorkerRed })
           }else{
+            if(that.state.baseRed.width == base.width - 1 && that.state.baseRed.height == base.height + 1){
+              return { width: base.width - 1, height: base.height + 1 }
+            }
             possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWorkerBackRed })
           }
         }else{
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width - 1 && that.state.resources[i].height == base.height + 1){
+                return { width: base.width - 1, height: base.height + 1 }
+              }
+            }
             possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWorkerGreen })
           }else{
+            if(that.state.baseGreen.width == base.width - 1 && that.state.baseGreen.height == base.height + 1){
+              return { width: base.width - 1, height: base.height + 1 }
+            }
             possibilities.push({ width: base.width - 1, height: base.height + 1, value: that.state.map[base.width - 1][base.height + 1].feromonsWorkerBackGreen })
           }
         }
@@ -237,14 +351,30 @@ class Simulation extends Component {
       if(base.width + 1 < width && base.height + 1 < height){
         if(isRed){
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width + 1 && that.state.resources[i].height == base.height + 1){
+                return { width: base.width + 1, height: base.height + 1}
+              }
+            }
             possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWorkerRed })
           }else{
+            if(that.state.baseRed.width == base.width + 1 && that.state.baseRed.height == base.height + 1){
+              return { width: base.width + 1, height: base.height + 1 }
+            }
             possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWorkerBackRed })
           }
         }else{
           if(to){
+            for(let i = 0; i < that.state.resources.length; i++){
+              if(that.state.resources[i].width == base.width + 1 && that.state.resources[i].height == base.height + 1){
+                return { width: base.width + 1, height: base.height + 1}
+              }
+            }
             possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWorkerGreen })
           }else{
+            if(that.state.baseGreen.width == base.width + 1 && that.state.baseGreen.height == base.height + 1){
+              return { width: base.width + 1, height: base.height + 1}
+            }
             possibilities.push({ width: base.width + 1, height: base.height + 1, value: that.state.map[base.width + 1][base.height + 1].feromonsWorkerBackGreen })
           }
         }
