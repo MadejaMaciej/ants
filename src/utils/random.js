@@ -12,8 +12,13 @@ export function getRandomName() {
     return n
 }
 
+export function getRandomItemAndIndex(items) {
+    var i = Math.floor(Math.random()*items.length)
+    return { item: items[i], index: i }
+}
+
 export function getRandomItem(items) {
-    return items[Math.floor(Math.random()*items.length)];
+    return items[Math.floor(Math.random()*items.length)]
 }
 
 export function getRandomItemBasedOnValue(items, min = 1) {
