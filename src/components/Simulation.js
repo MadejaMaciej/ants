@@ -18,14 +18,14 @@ import {
  } from '../utils/binary'
 
 var width = 50, height = 50, that, health = 100
-var startingResources = 20, resourcesSpawnTime = 20000 
+var startingResources = 20, moveInterval
 var resourcesMaxQuantity = 20, resourcesMinQuantity = 1, spawnResourceInterval
-var maxPopulationCap = 50, starting = 8
-var geneticalExchangeCost = 30, mutationChance = 5
+var maxPopulationCap = 50, starting = 10
+var geneticalExchangeCost = 25, mutationChance = 5
 var lvlExperienceFirst = 1000, lvlExperienceModifier = 1.5, pickupExperience = 100, leaveExperience = 200
 var killExperience = 500, lvlAdd = 20
-var speedOfAnim = 500, moveInterval
-var feromoneDissapearInterval = 3000, feromoneInterval
+var speedOfAnim = 1000, resourcesSpawnTime = 20000, feromoneDissapearInterval = 3000
+var feromoneInterval
 
 class Simulation extends Component {
   constructor(){
@@ -708,8 +708,7 @@ class Simulation extends Component {
         if(increaseMap){
           var el = map[ant.position.width][ant.position.height]
           if(el){
-            el.feromonsWorkerRed += 10
-            el.feromonsWorkerBackRed += 1
+            el.feromonsWorkerRed += 5
             ant.feromonFromLeft.push({width: ant.position.width, height: ant.position.height})
             map[ant.position.width][ant.position.height] = el
           }
@@ -724,8 +723,7 @@ class Simulation extends Component {
         if(increaseMap){
           var el = map[ant.position.width][ant.position.height]
           if(el){
-            el.feromonsWorkerRed += 1
-            el.feromonsWorkerBackRed += 10
+            el.feromonsWorkerBackRed += 5
             ant.feromonToLeft.push({width: ant.position.width, height: ant.position.height})
             map[ant.position.width][ant.position.height] = el
           }
